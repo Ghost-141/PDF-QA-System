@@ -1,0 +1,144 @@
+# RAG Powered Question-Answering System
+
+This project is a Retrieval-Augmented Generation (RAG) based Question-Answering system. It uses a language model to answer questions based on the content of a provided PDF or text file. The system is built with a FastAPI backend and a Streamlit frontend.
+
+## Features
+
+- **File Upload:** Upload PDF or text files to be used as the knowledge base.
+- **Question-Answering:** Ask questions about the content of the uploaded file and get detailed answers.
+- **Dynamic UI:** The user interface is built with Streamlit and provides a chat-like experience.
+- **Markdown and LaTeX Support:** The UI can render both Markdown and LaTeX, allowing for complex responses including mathematical equations.
+- **Code Formatting:** Code snippets in the answers are correctly formatted and highlighted.
+
+## Installation
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+- Python 3.7+
+- Pip or Conda
+
+### Using Pip
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Create a virtual environment (recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
+
+3.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### Using Conda
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    ```
+
+2.  **Create a Conda environment:**
+    ```bash
+    conda create --name myenv python=3.8
+    conda activate myenv
+    ```
+
+3.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### Configuration
+
+Create a `.env` file in the root directory of the project and add your Groq API key:
+```
+GROQ_API_KEY=your-groq-api-key
+```
+
+## Running the Application
+
+To run the application, execute the following command in your terminal:
+
+```bash
+python main.py
+```
+
+This will open two new terminal windows: one for the FastAPI backend and one for the Streamlit frontend.
+
+The UI will be available at `http://localhost:8501` and the API at `http://localhost:8000`.
+
+## Usage
+
+1.  **Upload a file:**
+    Use the sidebar in the UI to upload a PDF or text file.
+
+2.  **Process the file:**
+    Click the "Process File" button to have the backend process the file and create a vector store.
+
+3.  **Ask a question:**
+    Type your question in the chat input box and press Enter. The model will use the content of the file to generate an answer.
+
+## API Documentation
+
+The FastAPI backend provides the following endpoints:
+
+- **`GET /`**: Returns a welcome message.
+- **`POST /process-file`**: Processes an uploaded file.
+    - **Query Parameter:** `filename` (string, required)
+    - **Success Response:** `{"message": "File '<filename>' processed and added to the knowledge base...", "num_docs": <number>}`
+    - **Error Response:** `{"detail": "File '<filename>' not found..."}`
+- **`POST /ask`**: Asks a question to the model.
+    - **Request Body:** `{"query": "<your-question>"}`
+    - **Success Response:** `{"answer": "<model-answer>"}`
+    - **Error Response:** `{"detail": "QA pipeline not initialized..."}`
+
+FastAPI also automatically generates interactive API documentation. You can access it at `http://localhost:8000/docs` when the backend is running.
+
+## Project Structure
+
+```
+.
+├── .env
+├── api.py              # FastAPI backend
+├── chat_history.json
+├── new_ft.ipynb
+├── README.md
+├── requirements.txt    # Project dependencies
+├── ui.py               # Streamlit frontend
+├── __pycache__
+├── chroma_langchain_db
+├── data
+│   ├── extracted
+│   ├── processed
+│   └── raw
+├── notebooks
+└── src
+    └── utils
+        ├── dataloader.py
+        ├── datastore.py
+        ├── file_processor.py
+        └── retriever.py      # Contains the prompt and QA pipeline
+```
+
+## Technologies Used
+
+- **Backend:**
+    - [FastAPI](https://fastapi.tiangolo.com/)
+    - [Uvicorn](https://www.uvicorn.org/)
+- **Frontend:**
+    - [Streamlit](https://streamlit.io/)
+- **Language Model and RAG:**
+    - [LangChain](https://www.langchain.com/)
+    - [Groq](https://groq.com/)
+    - [ChromaDB](https://www.trychroma.com/)
+- **File Processing:**
+    - [PyPDF](https://pypdf.readthedocs.io/en/stable/)
