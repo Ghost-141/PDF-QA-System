@@ -8,7 +8,8 @@ load_dotenv()
 
 st.set_page_config(page_title="RAG Powered QA System", layout="wide")
 
-UPLOAD_DIR = "./data/raw"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+UPLOAD_DIR = os.path.join(BASE_DIR, "data", "raw")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
@@ -23,44 +24,45 @@ def clear_upload_directory():
             st.error(f"Failed to delete {file_path}. Reason: {e}")
 
 
-def clean_math_text(text):
-    # Remove repeated single-letter variables like "a a"
-    text = re.sub(r'\b([a-zA-Z])\s+\1\b', r'\1', text)
-    # Remove excessive spaces before punctuation
-    text = re.sub(r'\s+,', ',', text)
-    # Collapse multiple spaces into one
-    text = re.sub(r'\s+', ' ', text)
-    return text.strip()
+
 
 def render_mixed_content(text):
-    text = clean_math_text(text)  # 🆕 pre-cleaning step
+    """
+    Render mixed content in Streamlit:
+    - Markdown text
+    - LaTeX equations ($...$ inline, $...$ block)
+    - Code in any language (triple backticks)
+    """
+    code_pattern = r"(```.*?```)"
+    code_parts = re.split(code_pattern, text, flags=re.DOTALL)
 
-    # Existing LaTeX normalization
-    text = re.sub(r"\[\s*(.*?)\s*\]", r"$$\1$$", text, flags=re.DOTALL)
-    text = re.sub(r"\\\n", "", text)
-    text = re.sub(r"\s*\n\s*", " ", text)
+    for code_part in code_parts:
+        # Explicit triple-backtick code block
+        if code_part.startswith("```") and code_part.endswith("```"):
+            first_line = code_part.split("\n")[0][3:].strip()
+            code_content = "\n".join(code_part.split("\n")[1:-1])
+            st.code(code_content, language=first_line or None)
+            st.markdown("")  
 
-    parts = re.split(r"(```.*?```|\$\$.*?\$\$)", text, flags=re.DOTALL)
-    for part in parts:
-        if part.startswith("```") and part.endswith("```"):
-            lines = part.split("\n")
-            language = lines[0][3:].strip() or None
-            code_content = "\n".join(lines[1:-1])
-            st.code(code_content, language=language)
-        elif part.startswith("$$") and part.endswith("$"):
-            st.latex(part.strip("$"))
+        # Markdown + LaTeX
         else:
-            inline_parts = re.split(r"(\$.*?\$)", part)
-            for ipart in inline_parts:
-                if ipart.startswith("$") and ipart.endswith("$"):
-                    st.latex(ipart.strip("$"))
+            block_latex_pattern = r"(\$\$.*?\$\$)"
+            block_parts = re.split(block_latex_pattern, code_part, flags=re.DOTALL)
+            for block in block_parts:
+                if block.startswith("$") and block.endswith("$"):
+                    st.latex(block.strip("$"))
+                    st.markdown("")  # spacing after block
                 else:
-                    paragraphs = ipart.split("\n\n")
-                    for p in paragraphs:
-                        if p.strip():
-                            st.markdown(p)
-
-
+                    inline_parts = re.split(r"(\$.*?\$)", block)
+                    for part in inline_parts:
+                        if part.startswith("$") and part.endswith("$"):
+                            st.latex(part.strip("$"))
+                        else:
+                            paragraphs = part.split("\n\n")
+                            for p in paragraphs:
+                                if p.strip():
+                                    st.markdown(p)
+                                    st.markdown("")
 
 uploaded_file = st.sidebar.file_uploader("📂 Upload a PDF or Text file", type=["pdf", "txt"])
 if uploaded_file is not None:

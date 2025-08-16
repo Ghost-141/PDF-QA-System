@@ -7,7 +7,7 @@ from src.utils.datastore import VectorStoreManager
 from src.utils.retriever import QAPipelineManager
 
 # Folder for uploads
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UPLOAD_DIR = os.path.join(BASE_DIR, "data", "raw")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 

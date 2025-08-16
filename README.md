@@ -57,6 +57,21 @@ These instructions will get you a copy of the project up and running on your loc
     pip install -r requirements.txt
     ```
 
+### GPU Support (NVIDIA)
+
+For GPU acceleration, you need to install PyTorch with CUDA support. Make sure you have the correct NVIDIA drivers and CUDA Toolkit version installed.
+
+1.  **Check your NVIDIA driver and CUDA version:**
+    You can check your NVIDIA driver version by running `nvidia-smi` in your terminal. This will also show the highest version of CUDA that is supported.
+
+2.  **Install PyTorch with CUDA:**
+    Visit the [PyTorch website](https://pytorch.org/get-started/locally/) to find the correct command for your specific CUDA version. For example, to install PyTorch with CUDA 12.6, you would run:
+    ```bash
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+    ```
+
+    **Note:** Using a version of PyTorch with CUDA support is essential for running the model on an NVIDIA GPU. If you do not have a compatible GPU, the model will run on the CPU, which will be significantly slower.
+
 ### Configuration
 
 Create a `.env` file in the root directory of the project and add your Groq API key:
@@ -91,7 +106,7 @@ The UI will be available at `http://localhost:8501` and the API at `http://local
 
 The FastAPI backend provides the following endpoints:
 
-- **`GET /`**: Returns a welcome message.
+
 - **`POST /process-file`**: Processes an uploaded file.
     - **Query Parameter:** `filename` (string, required)
     - **Success Response:** `{"message": "File '<filename>' processed and added to the knowledge base...", "num_docs": <number>}`
@@ -103,42 +118,20 @@ The FastAPI backend provides the following endpoints:
 
 FastAPI also automatically generates interactive API documentation. You can access it at `http://localhost:8000/docs` when the backend is running.
 
-## Project Structure
 
-```
-.
-├── .env
-├── api.py              # FastAPI backend
-├── chat_history.json
-├── new_ft.ipynb
-├── README.md
-├── requirements.txt    # Project dependencies
-├── ui.py               # Streamlit frontend
-├── __pycache__
-├── chroma_langchain_db
-├── data
-│   ├── extracted
-│   ├── processed
-│   └── raw
-├── notebooks
-└── src
-    └── utils
-        ├── dataloader.py
-        ├── datastore.py
-        ├── file_processor.py
-        └── retriever.py      # Contains the prompt and QA pipeline
-```
 
 ## Technologies Used
 
-- **Backend:**
-    - [FastAPI](https://fastapi.tiangolo.com/)
-    - [Uvicorn](https://www.uvicorn.org/)
-- **Frontend:**
-    - [Streamlit](https://streamlit.io/)
-- **Language Model and RAG:**
-    - [LangChain](https://www.langchain.com/)
-    - [Groq](https://groq.com/)
-    - [ChromaDB](https://www.trychroma.com/)
-- **File Processing:**
-    - [PyPDF](https://pypdf.readthedocs.io/en/stable/)
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Streamlit](https://streamlit.io/)
+- [LangChain](https://www.langchain.com/)
+- [Groq](https://groq.com/)
+- [ChromaDB](https://www.trychroma.com/)
+- [PyPDF](https://pypdf.readthedocs.io/en/stable/)
+
+## Upcoming Features
+
+- Support for Bangla Languge
+- Improve UI for Complex Ouput Support
+- Process Images and Complex Pdf

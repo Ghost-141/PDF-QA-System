@@ -3,9 +3,14 @@ from langchain_chroma import Chroma
 import os
 import shutil
 import torch
+from fastapi import HTTPException
 
 class VectorStoreManager:
-    def __init__(self, persist_directory="./chroma_langchain_db"):
+    def __init__(self, persist_directory=None):
+        if persist_directory is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            persist_directory = os.path.join(base_dir, "chroma_langchain_db")
+        
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f"Using device: {device}")
         
@@ -25,7 +30,7 @@ class VectorStoreManager:
 
     def add_documents(self, documents):
         if not self.vector_store:
-            raise Exception("Vector store not initialized. Call set_collection first.")
+            raise HTTPException(status_code=500, detail="Vector store not initialized. Call set_collection first.")
         if not documents:
             return
         self.vector_store.add_documents(documents)
@@ -33,7 +38,7 @@ class VectorStoreManager:
 
     def get_retriever(self, k_value=6):
         if not self.vector_store:
-            raise Exception("Vector store not initialized. Call set_collection first.")
+            raise HTTPException(status_code=500, detail="Vector store not initialized. Call set_collection first.")
         return self.vector_store.as_retriever(search_kwargs={"k": k_value})
 
     def clean_database(self):
