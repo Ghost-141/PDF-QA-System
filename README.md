@@ -1,5 +1,8 @@
 # RAG Powered Question-Answering System
 
+<img width="1910" height="1016" alt="image" src="https://github.com/user-attachments/assets/212e046c-e020-44dd-bb34-b4bbd934399a" />
+
+
 This project is a Retrieval-Augmented Generation (RAG) based Question-Answering system. It uses a language model to answer questions based on the content of a provided PDF or text file. The system is built with a FastAPI backend and a Streamlit frontend.
 
 ## Features
