@@ -5,6 +5,8 @@ dist/
 wheels/
 *.egg-info
 *.ipynb
+*.pyc
+*.bin
 
 # Virtual environments
 .venv
@@ -16,6 +18,7 @@ wheels/
 *.sqlite3
 instance/
 *.pid
+*.pdf
 
 # Node / Next.js artifacts
 node_modules/
