@@ -1,1 +1,28 @@
-*.env
+# Python-generated files
+__pycache__/
+build/
+dist/
+wheels/
+*.egg-info
+*.ipynb
+
+# Virtual environments
+.venv
+.env
+
+
+# Database Files
+*.db
+*.sqlite3
+instance/
+*.pid
+
+# Node / Next.js artifacts
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+frontend/.turbo/
+frontend/.swc/
+frontend/package-lock.json
+frontend/pnpm-lock.yaml

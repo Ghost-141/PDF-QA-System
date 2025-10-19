@@ -4,13 +4,18 @@ from fastapi import HTTPException
 from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from src.utils.logging_config import get_logger
 
 load_dotenv()
+logger = get_logger(__name__)
+
 
 def get_api_key():
     groq_api_key = os.getenv("GROQ_API_KEY")
     if not groq_api_key:
+        logger.error("GROQ_API_KEY missing from environment.")
         raise ValueError("GROQ_API_KEY not found in environment variables.")
+    logger.info("Successfully retrieved GROQ_API_KEY from environment.")
     return groq_api_key
 
 
@@ -60,24 +65,33 @@ class QAPipelineManager:
             try:
                 self.api_key = get_api_key()
             except ValueError as e:
+                logger.exception("Failed to initialize QA pipeline manager due to missing API key.")
                 raise HTTPException(status_code=500, detail=str(e))
         else:
             self.api_key = api_key
 
-        self.chat = ChatGroq(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
-            temperature=0.1,
-            max_retries=3,
-            api_key=self.api_key,
-        )
+        logger.info("Initializing ChatGroq client with model 'openai/gpt-oss-120b'.")
+        try:
+            self.chat = ChatGroq(
+                model="openai/gpt-oss-120b",
+                temperature=0.1,
+                max_retries=3,
+                api_key=self.api_key,
+            )
+        except Exception:
+            logger.exception("Failed to create ChatGroq client.")
+            raise
         self.qa_pipeline = None
 
     def create_pipeline(self, retriever):
+        logger.info("Creating QA retrieval pipeline.")
         self.qa_pipeline = RetrievalQA.from_chain_type(
             llm=self.chat,
             retriever=retriever,
             chain_type_kwargs={"prompt": custom_prompt}
         )
+        logger.info("QA retrieval pipeline initialized successfully.")
 
     def get_pipeline(self):
+        logger.info("Returning QA pipeline (initialized=%s)", self.qa_pipeline is not None)
         return self.qa_pipeline
