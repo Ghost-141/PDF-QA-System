@@ -20,7 +20,7 @@ These instructions will get you a copy of the project up and running on your loc
 - Pip (or Conda)
 - Node.js 18+
 
-### Setup Using (pip)
+### Setup Using [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 1.  **Clone the repository:**
     ```bash
@@ -30,7 +30,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 2.  **Create a virtual environment (recommended):**
     ```bash
-    python -m venv .venv
+    uv sync
     .\.venv\Scripts\activate   # Windows
     source .venv/bin/activate  # macOS / Linux
     ```
@@ -40,7 +40,7 @@ These instructions will get you a copy of the project up and running on your loc
     pip install -r requirements.txt
     ```
 
-### Using Conda
+### Setup Using Conda
 
 1.  **Clone the repository:**
     ```bash
@@ -50,7 +50,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 2.  **Create a Conda environment:**
     ```bash
-    conda create --name pdf_qa python=3.10
+    conda create --name pdf_qa python=3.9.23
     conda activate pdf_qa
     ```
 
@@ -151,7 +151,6 @@ The FastAPI backend provides the following endpoints:
 - [Next.js](https://nextjs.org/)
 - [React](https://react.dev/)
 - [LangChain](https://www.langchain.com/)
-- [Groq](https://groq.com/)
 - [ChromaDB](https://www.trychroma.com/)
 - [PyPDF / PyMuPDF](https://pypdf.readthedocs.io/en/stable/)
 
